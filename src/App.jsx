@@ -6,31 +6,39 @@ import Person from './components/Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Bruno Nacimento', age: 30},
-      { name: 'Max', age: 28},
-      { name: 'Stephanie', age: 29}
+      { id:'1a', name: 'Bruno Nacimento', age: 30},
+      { id:'1b', name: 'Max', age: 28},
+      { id:'1c', name: 'Stephanie', age: 29}
     ]
   };
   
-  switchNameHandler = (newName) => {
-    this.setState({ 
-      persons: [
-        { name: newName, age: 31},
-        { name: 'John', age: 25},
-        { name: 'Joseph', age: 21}
-      ]
-    });
-  };
-
-  nameChangedHandler = (event) => {
-    this.setState({ 
-      persons: [
-        { name: 'Paulo', age: 31},
-        { name: event.target.value, age: 25},
-        { name: 'Joseph', age: 21}
-      ]
+  nameChangedHandler = (event, index) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === index;
     });
 
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+    // const person = Object.assign({}, this.state.persons[personIndex]);
+
+    person.name = event.target.value;
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+      this.setState( { persons: persons });
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState ({
+      showPersons: !doesShow })
+  }
+
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons]
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
   }
 
   render () {
@@ -42,25 +50,35 @@ class App extends Component {
       padding: '8px',
       cursor: 'pointer'
     };
-    Estilização inline é aplicada quando não queremos que o css não sobrescreva o estilo de outra classe
-
+    Estilização inline é aplicada quando não queremos que o css sobrescreva o estilo de outra classe
     */
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+        {this.state.persons.map((person, index) => (
+          <Person 
+            key={index} 
+            name={person.name} 
+            age={person.age}
+            click={() => this.deletePersonHandler(index)}
+            changed={(event) => this.nameChangedHandler(event, person.id)}>
+              My hobbies: Racing
+          </Person>
+        ))}
+        </div>
+      )
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm React App</h1>
         <p>This is really working!</p>
         <button 
-        onClick={() => this.switchNameHandler('Paulo')}>Switch name</button>
-        {this.state.persons.map(person => (
-          <Person 
-            key={person.name} 
-            name={person.name} 
-            age={person.age}
-            click={() => this.switchNameHandler('Paulo')}
-            changed={this.nameChangedHandler}>
-              My hobbies: Racing
-          </Person>
-        ))}
+        onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        {persons}       
       </div>
     );
   }
@@ -79,6 +97,43 @@ export default App;
 
     // Stateless component é utilizado para componentes que não precisam de gerenciamento de estado, componentes de apresentação apenas. Criar o máximo de componentes possível.
     // Stateful component é utilizado para componentes que necessitam de alteração de estado, que possuem métodos, etc.
+    
+    
+    // ng-if:
+    // { this.state.showPersons ?
+    //   <div >
+
+    //   </div> : null
+    // }
+
+    // ng-if do jeito certo
+    /*
+
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+        {this.state.persons.map(person => (
+          <Person 
+            key={person.name} 
+            name={person.name} 
+            age={person.age}
+            click={() => this.switchNameHandler('Paulo')}
+            changed={this.nameChangedHandler}>
+              My hobbies: Racing
+          </Person>
+        ))}
+        </div>
+      )
+    }
+    return (
+      <div className="App">
+
+        {persons}       
+      </div>
+    );
+    */
 
 // React Hooks:
 // import React, { useState } from 'react';
