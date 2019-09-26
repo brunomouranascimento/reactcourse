@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './App.scss';
+import styles from './App.module.scss';
 
-import Person from './components/Person/Person';
+import Person from '../components/Persons/Person/Person';
 
 class App extends Component {
   state = {
@@ -42,16 +42,16 @@ class App extends Component {
   }
 
   render () {
-    /*
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
-    Estilização inline é aplicada quando não queremos que o css sobrescreva o estilo de outra classe
-    */
+    
+    // const style = {
+    //   backgroundColor: 'green',
+    //   font: 'inherit',
+    //   border: '1px solid blue',
+    //   padding: '8px',
+    //   color: 'white',
+    //   cursor: 'pointer'
+    // };
+    // Estilização inline é aplicada quando não queremos que o css sobrescreva o estilo de outra classe
 
     let persons = null;
 
@@ -72,11 +72,22 @@ class App extends Component {
       )
     }
 
+    //NgClass:
+    let classes = [];
+    if (this.state.persons.length <= 2 ) {
+      classes.push('red');
+    }
+
+    if (this.state.persons.length <= 1 ) {
+      classes.push('bold');
+    }
+    
     return (
-      <div className="App">
+      <div className={styles.App}>
         <h1>Hi, I'm React App</h1>
-        <p>This is really working!</p>
-        <button 
+        <p className={classes.join(' ')}>This is really working!</p>
+        <button
+        className={classes.join(' ')}
         onClick={this.togglePersonsHandler}>Toggle Persons</button>
         {persons}       
       </div>
